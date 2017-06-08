@@ -1,0 +1,48 @@
+<html>
+    <style>
+        .col{
+            background-color: gray;
+        }
+    </style>    
+    <script>
+        pw = 0.9;
+        function start(){
+            c = document.getElementById("can");
+            ctx = c.getContext("2d");
+            if(window.innerHeight<window.innerWidth){
+                c.height = pw*window.innerHeight;    
+                c.width = pw*window.innerHeight;
+            }
+            else{    
+                c.width = pw*window.innerWidth;
+                c.height = pw*window.innerWidth;
+            }
+            setInterval(game(),1000/15);
+        }
+        function game(){
+            ctx.fillStyle = "black";
+            ctx.fillRect(0,0,c.width,c.height);
+            x = (c.width)/8;
+            y = (c.height)/8;
+            ctx.fillStyle = "white";
+            for(var i = 0;i < 8;i++){
+                for(var j = 0;j < 8;j++){
+                    if((i+j)%2==0){
+                        ctx.fillRect(i*x,j*y,x,y);
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        
+    </style>
+    <head>
+    
+    </head>
+    <body onload="start()" align="center" class="col">
+        <canvas id="can">
+            
+        </canvas>
+    </body>
+</html>
