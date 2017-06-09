@@ -6,6 +6,96 @@
     </style>    
     <script>
         pw = 0.9;
+        ng = 1;
+        inipos = 
+        {
+            "white": {
+                "pawn1": {
+                    r: 0,
+                    c: 1,
+                    active: 1
+                },
+                "pawn2": {
+                    r: 1,
+                    c: 1,
+                    active: 1
+                },
+                "pawn3": {
+                    r: 2,
+                    c: 1,
+                    active: 1
+                },
+                "pawn4": {
+                    r: 3,
+                    c: 1,
+                    active: 1
+                },
+                "pawn5": {
+                    r: 4,
+                    c: 1,
+                    active: 1
+                },
+                "pawn6": {
+                    r: 5,
+                    c: 1,
+                    active: 1
+                },
+                "pawn7": {
+                    r: 6,
+                    c: 1,
+                    active: 1
+                },
+                "pawn8": {
+                    r: 7,
+                    c: 1,
+                    active: 1
+                }  
+            },
+            "black": {
+                "pawn1": {
+                    r: 0,
+                    c: 6,
+                    active: 1
+                },
+                "pawn2": {
+                    r: 1,
+                    c: 6,
+                    active: 1
+                },
+                "pawn3": {
+                    r: 2,
+                    c: 6,
+                    active: 1
+                },
+                "pawn4": {
+                    r: 3,
+                    c: 6,
+                    active: 1
+                },
+                "pawn5": {
+                    r: 4,
+                    c: 6,
+                    active: 1
+                },
+                "pawn6": {
+                    r: 5,
+                    c: 6,
+                    active: 1
+                },
+                "pawn7": {
+                    r: 6,
+                    c: 6,
+                    active: 1
+                },
+                "pawn8": {
+                    r: 7,
+                    c: 6,
+                    active: 1
+                }                
+            }
+        }
+        pos = inipos;
+        console.log(inipos.black.pawn1.c);
         function start(){
             c = document.getElementById("can");
             ctx = c.getContext("2d");
@@ -20,6 +110,13 @@
             setInterval(game(),1000/15);
         }
         function game(){
+            drawboard();
+            if(ng == 1){
+                defaultpieces();
+            }
+            drawpieces();
+        }
+        function drawboard(){
             ctx.fillStyle = "black";
             ctx.fillRect(0,0,c.width,c.height);
             x = (c.width)/8;
@@ -30,6 +127,161 @@
                     if((i+j)%2==0){
                         ctx.fillRect(i*x,j*y,x,y);
                     }
+                }
+            }            
+        }
+        function defaultpieces(){
+            pos = inipos;
+        }
+        function drawpieces(){
+            console.log("draw");
+            x = c.width/8;
+            y = c.height/8;
+            if(pos.black.pawn1.active == 1){
+                bp1 = new Image();
+                bp1.src = 'images/pawn.png';
+                bp1x = pos.black.pawn1.r;
+                bp1y = pos.black.pawn1.c;
+                bp1.onload = function(){
+                    ctx.drawImage(bp1,bp1x*x,bp1y*y,x,y);
+                }
+            }
+            if(pos.black.pawn2.active == 1){
+                bp2 = new Image();
+                bp2.src = 'images/pawn.png';
+                bp2x = pos.black.pawn2.r;
+                bp2y = pos.black.pawn2.c;
+                bp2.onload = function(){
+                    ctx.drawImage(bp2,bp2x*x,bp2y*y,x,y);
+                }
+            }
+            if(pos.black.pawn3.active == 1){
+                bp3 = new Image();
+                bp3.src = 'images/pawn.png';
+                bp3x = pos.black.pawn3.r;
+                bp3y = pos.black.pawn3.c;
+                bp3.onload = function(){
+                    ctx.drawImage(bp3,bp3x*x,bp3y*y,x,y);
+                }
+            }
+            if(pos.black.pawn4.active == 1){
+                bp4 = new Image();
+                bp4.src = 'images/pawn.png';
+                bp4x = pos.black.pawn4.r;
+                bp4y = pos.black.pawn4.c;
+                bp4.onload = function(){
+                    ctx.drawImage(bp4,bp4x*x,bp4y*y,x,y);
+                }
+            }
+            if(pos.black.pawn5.active == 1){
+                bp5 = new Image();
+                bp5.src = 'images/pawn.png';
+                bp5x = pos.black.pawn5.r;
+                bp5y = pos.black.pawn5.c;
+                bp5.onload = function(){
+                    ctx.drawImage(bp5,bp5x*x,bp5y*y,x,y);
+                }
+            }
+            if(pos.black.pawn6.active == 1){
+                bp6 = new Image();
+                bp6.src = 'images/pawn.png';
+                bp6x = pos.black.pawn6.r;
+                bp6y = pos.black.pawn6.c;
+                bp6.onload = function(){
+                    ctx.drawImage(bp6,bp6x*x,bp6y*y,x,y);
+                }
+            }
+            if(pos.black.pawn7.active == 1){
+                bp7 = new Image();
+                bp7.src = 'images/pawn.png';
+                bp7x = pos.black.pawn7.r;
+                bp7y = pos.black.pawn7.c;
+                bp7.onload = function(){
+                    ctx.drawImage(bp7,bp7x*x,bp7y*y,x,y);
+                }
+            }
+            if(pos.black.pawn8.active == 1){
+                bp8 = new Image();
+                bp8.src = 'images/pawn.png';
+                bp8x = pos.black.pawn8.r;
+                bp8y = pos.black.pawn8.c;
+                bp8.onload = function(){
+                    ctx.drawImage(bp8,bp8x*x,bp8y*y,x,y);
+                }
+            }
+            
+            
+            
+            if(pos.white.pawn1.active == 1){
+                p1 = new Image();
+                p1.src = 'images/pawnw.png';
+                p1x = pos.white.pawn1.r;
+                p1y = pos.white.pawn1.c;
+                p1.onload = function(){
+                    ctx.drawImage(p1,p1x*x,p1y*y,x,y);
+                }
+            }
+            if(pos.white.pawn2.active == 1){
+                p2 = new Image();
+                p2.src = 'images/pawnw.png';
+                p2x = pos.white.pawn2.r;
+                p2y = pos.white.pawn2.c;
+                p2.onload = function(){
+                    ctx.drawImage(p2,p2x*x,p2y*y,x,y);
+                }
+            }
+            if(pos.white.pawn3.active == 1){
+                p3 = new Image();
+                p3.src = 'images/pawnw.png';
+                p3x = pos.white.pawn3.r;
+                p3y = pos.white.pawn3.c;
+                p3.onload = function(){
+                    ctx.drawImage(p3,p3x*x,p3y*y,x,y);
+                }
+            }
+            if(pos.white.pawn4.active == 1){
+                p4 = new Image();
+                p4.src = 'images/pawnw.png';
+                p4x = pos.white.pawn4.r;
+                p4y = pos.white.pawn4.c;
+                p4.onload = function(){
+                    ctx.drawImage(p4,p4x*x,p4y*y,x,y);
+                }
+            }
+            if(pos.white.pawn5.active == 1){
+                p5 = new Image();
+                p5.src = 'images/pawnw.png';
+                p5x = pos.white.pawn5.r;
+                p5y = pos.white.pawn5.c;
+                p5.onload = function(){
+                    ctx.drawImage(p5,p5x*x,p5y*y,x,y);
+                }
+            }
+            if(pos.white.pawn6.active == 1){
+                p6 = new Image();
+                p6.src = 'images/pawnw.png';
+                p6x = pos.white.pawn6.r;
+                p6y = pos.white.pawn6.c;
+                p6.onload = function(){
+                    ctx.drawImage(p6,p6x*x,p6y*y,x,y);
+                }
+            }
+            if(pos.white.pawn7.active == 1){
+                p7 = new Image();
+                p7.src = 'images/pawnw.png';
+                p7x = pos.white.pawn7.r;
+                p7y = pos.white.pawn7.c;
+                p7.onload = function(){
+                    ctx.drawImage(p7,p7x*x,p7y*y,x,y);
+                }
+            }
+            if(pos.white.pawn8.active == 1){
+                p8 = new Image();
+                p8.src = 'images/pawnw.png';
+                p8x = pos.white.pawn8.r;
+                p8y = pos.white.pawn8.c;
+                p8.onload = function(){
+                    ctx.drawImage(p8,p8x*x,p8y*y,x,y);
                 }
             }
         }
