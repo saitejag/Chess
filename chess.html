@@ -5,11 +5,46 @@
         }
     </style>    
     <script>
+        setcol = "brown";
         pw = 0.9;
         ng = 1;
+        prevx = -1;
+        prevy = -1;
+        turn = 0;//white
+        var hl = new Array(8);
+        for(var i = 0;i < 8;i++){
+            hl[i] = new Array(8);
+        }
+        for(var i = 0;i < 8;i++){
+            for(var j = 0;j < 8;j++){
+                hl[i][j] = '0';
+            }
+        }
+        var matpos = new Array(8);
+        for(var i = 0;i < 8;i++){
+            matpos[i] = new Array(8);
+        }
+        for(var i = 0;i < 8;i++){
+            matpos[i][1] = "wpawn";
+            matpos[i][6] = "bpawn";
+        }
+        matpos[0][0] = "wrook";
+        matpos[7][0] = "wrook";
+        matpos[0][7] = "brook";
+        matpos[7][7] = "brook";
         inipos = 
         {
             "white": {
+                "rook1": {
+                    r: 0,
+                    c: 0,
+                    active: 1
+                },
+                "rook2": {
+                    r: 7,
+                    c: 0,
+                    active: 1
+                },
                 "pawn1": {
                     r: 0,
                     c: 1,
@@ -52,6 +87,16 @@
                 }  
             },
             "black": {
+                "rook1": {
+                    r: 0,
+                    c: 7,
+                    active: 1
+                },
+                "rook2": {
+                    r: 7,
+                    c: 7,
+                    active: 1
+                },
                 "pawn1": {
                     r: 0,
                     c: 6,
@@ -95,7 +140,6 @@
             }
         }
         pos = inipos;
-        console.log(inipos.black.pawn1.c);
         function start(){
             c = document.getElementById("can");
             ctx = c.getContext("2d");
@@ -107,17 +151,276 @@
                 c.width = pw*window.innerWidth;
                 c.height = pw*window.innerWidth;
             }
-            setInterval(game(),1000/15);
+            bx = c.width/8;
+            by = c.height/8;
+            game();
+//            setInterval(game(),1000/15);
+        }
+        function drawpiece(x,y,s){
+            if((x+y)%2 == 0){
+                ctx.fillStyle = "white";
+            }
+            else{
+                ctx.fillStyle = setcol;
+            }
+            ctx.fillRect(x*bx,y*by,bx,by);
+            if(s == "bpawn"){
+                bp4 = new Image();
+                bp4.src = 'images/bpawn.png';
+                bp4.onload = function(){
+                    ctx.drawImage(bp4,bx*x,by*y,bx,by);
+                }
+            }
+            if(s == "wpawn"){
+                wp4 = new Image();
+                wp4.src = 'images/wpawn.png';
+                wp4.onload = function(){
+                    ctx.drawImage(wp4,bx*x,by*y,bx,by);
+                }
+            } 
+            if(s == "wrook"){
+                wr4 = new Image();
+                wr4.src = 'images/wrook.png';
+                wr4.onload = function(){
+                    ctx.drawImage(wr4,bx*x,by*y,bx,by);
+                } 
+            }
+            if(s == "brook"){
+                br4 = new Image();
+                br4.src = 'images/brook.png';
+                br4.onload = function(){
+                    ctx.drawImage(br4,bx*x,by*y,bx,by);
+                } 
+            }
+        }
+        function borderfill(x,y){
+            ctx.fillStyle = "blue";
+            ctx.fillRect(Math.floor(x/bx)*bx,Math.floor(y/by)*by,bx,0.05*by);               ctx.fillRect(Math.floor(x/bx)*bx,Math.floor(y/by)*by,0.05*bx,by);
+            ctx.fillRect(Math.floor(x/bx)*bx,Math.floor(y/by)*by+by-(0.05*by),bx,0.05*by);             
+            ctx.fillRect(Math.floor(x/bx)*bx+bx-(0.05*bx),Math.floor(y/by)*by,0.05*bx,by);
+            hl[Math.floor(x/bx)][Math.floor(y/by)] = 1;
+            
+        }
+        function borderclear(){
+            for(var i = 0;i < 8;i++){
+                for(var j = 0;j < 8;j++){
+                    if(hl[i][j]==1){
+                        if((i+j)%2==0){
+                            ctx.fillStyle = "white";
+                        }
+                        else{
+                            ctx.fillStyle = setcol;
+                        }
+                        ctx.fillRect(i*bx,j*by,bx,0.05*by);                         
+                        ctx.fillRect(i*bx,j*by,0.05*bx,by);
+                        ctx.fillRect(i*bx,j*by+by-(0.05*by),bx,0.05*by);             
+                        ctx.fillRect(i*bx+bx-(0.05*bx),j*by,0.05*bx,by);
+
+                        hl[i][j] = 0;                        
+                    }
+                }
+            }
+        }
+        function possibilities(x,y){
+            if(matpos[x][y]=="wpawn"){
+                console.log(1);
+                if(x+1 < 8 && y+1 < 8 && matpos[x+1][y+1]!=null){
+                    if(matpos[x+1][y+1][0]=='b'){
+                        borderfill((x+1)*c.width/8,(y+1)*c.height/8);
+                        hl[x+1][y+1] = 1;
+                    }
+                }
+                if(x-1 >= 0 && y+1 < 8 && matpos[x-1][y+1]!=null){
+                    if(matpos[x-1][y+1][0]=='b'){    
+                        borderfill((x-1)*c.width/8,(y+1)*c.height/8);
+                        hl[x-1][y+1] = 1;
+                    }
+                }
+                if(y+1<8 && matpos[x][y+1]==null){
+                    if(y==1 && matpos[x][3]==null){
+                        borderfill(x*bx,(3)*bx);
+                        hl[x][y+2] = 1;
+                    }
+                    borderfill(x*bx,(y+1)*by);
+                    hl[x][y+1] = 1;
+                }
+            }
+            if(matpos[x][y]=="bpawn"){
+                console.log(2);
+                if(x+1 < 8 && y-1 >= 0 && matpos[x+1][y-1]!=null){
+                    if(matpos[x+1][y-1][0]=='w'){
+                        borderfill((x+1)*c.width/8,(y-1)*c.height/8);
+                        hl[x+1][y-1] = 1;
+                    }
+                }
+                if(x-1 >= 0 && y-1 >= 0 && matpos[x-1][y-1]!=null){
+                    if(matpos[x-1][y-1][0]=='w'){
+                        borderfill((x-1)*c.width/8,(y-1)*c.height/8);
+                        hl[x-1][y-1] = 1;
+                    }
+                }
+                if(y-1>=0 && matpos[x][y-1]==null){
+                    if(y==6 && matpos[x][4]==null){
+                        borderfill(x*bx,4*bx);
+                        hl[x][4] = 1;
+                    }
+                    borderfill(x*bx,(y-1)*by);
+                    hl[x][y-1] = 1;
+                }
+            }
+            if(matpos[x][y]=="wrook" || matpos[x][y]=="brook"){
+                l = 1;
+                while(x+l < 8 && matpos[x+l][y]==null){
+                    borderfill((x+l)*bx,y*by);
+                    hl[x+l][y] = 1;
+                    l++;
+                }
+                if(x+l < 8){
+                    if(matpos[x+l][y][0]!=matpos[x][y][0]){
+                        borderfill((x+l)*bx,y*by);
+                        hl[x+l][y] = 1;   
+                    }
+                }
+                l = 1;
+                while(y+l < 8 && matpos[x][y+l]==null){
+                    borderfill(x*bx,(y+l)*by);
+                    hl[x][y+l] = 1;
+                    l++;
+                }
+                if(y+l < 8){
+                    if(matpos[x][y+l][0]!=matpos[x][y][0]){
+                        borderfill((x)*bx,(y+l)*by);
+                        hl[x][y+l] = 1;   
+                    }
+                }
+                l = 1;
+                while(x-l >= 0 && matpos[x-l][y]==null){
+                    borderfill((x-l)*bx,y*by);
+                    hl[x-1][y] = 1;
+                    l++;
+                }
+                if(x-l >= 0){
+                    if(matpos[x-l][y][0]!=matpos[x][y][0]){
+                        borderfill((x-l)*bx,y*by);
+                        hl[x-l][y] = 1;   
+                    }
+                }
+                l = 1;
+                while(y-l>=0 && matpos[x][y-l]==null){
+                    borderfill(x*bx,(y-l)*by);
+                    hl[x][y-l] = 1;
+                    l++;
+                }
+                if(y-l >= 0){
+                    if(matpos[x][y-l][0]!=matpos[x][y][0]){
+                        borderfill((x)*bx,(y-l)*by);
+                        hl[x][y-l] = 1;   
+                    }
+                }
+            }
+        }
+        function move(x,y,prevx,prevy){
+            if(matpos[prevx][prevy][1] == 'p'){
+                if(matpos[prevx][prevy][0] == 'w'){
+                    if((prevx+prevy)%2==0){
+                        ctx.fillStyle = "white";
+                    }
+                    if((prevx+prevy)%2!=0){
+                        ctx.fillStyle = setcol;
+                    }
+                    ctx.fillRect(prevx*bx,prevy*by,bx,by);
+                    drawpiece(x,y,"wpawn");
+                    matpos[x][y] = "wpawn";
+                    turn = 1;
+                }
+                if(matpos[prevx][prevy][0] == 'b'){
+                    if((prevx+prevy)%2==0){
+                        ctx.fillStyle = "white";
+                    }
+                    if((prevx+prevy)%2!=0){
+                        ctx.fillStyle = setcol;
+                    }
+                    ctx.fillRect(prevx*bx,prevy*by,bx,by);
+                    drawpiece(x,y,"bpawn");
+                    matpos[x][y] = "bpawn";
+                    turn = 0;
+                }
+            }
+            if(matpos[prevx][prevy][1] == 'r'){
+                if(matpos[prevx][prevy][0] == 'w'){
+                    if((prevx+prevy)%2==0){
+                        ctx.fillStyle = "white";
+                    }
+                    if((prevx+prevy)%2!=0){
+                        ctx.fillStyle = setcol;
+                    }
+                    ctx.fillRect(prevx*bx,prevy*by,bx,by);
+                    drawpiece(x,y,"wrook");
+                    matpos[x][y] = "wrook";
+                    turn = 1;
+                }
+                if(matpos[prevx][prevy][0] == 'b'){
+                    if((prevx+prevy)%2==0){
+                        ctx.fillStyle = "white";
+                    }
+                    if((prevx+prevy)%2!=0){
+                        ctx.fillStyle = setcol;
+                    }
+                    ctx.fillRect(prevx*bx,prevy*by,bx,by);
+                    drawpiece(x,y,"brook");
+                    matpos[x][y] = "brook";
+                    turn = 0;
+                }
+            }
+            matpos[prevx][prevy] = null;
+            borderclear();
+        }
+        function piececlick(event){
+            flag = 0;
+            x = event.clientX - c.offsetLeft;
+            y = event.clientY - c.offsetTop;
+//            console.log(x+" "+y);
+            if(hl[Math.floor(x/bx)][Math.floor(y/by)] == 0 || Math.floor(prevx/bx)==Math.floor(x/bx) && Math.floor(prevy/by)==Math.floor(y/by)){   
+                borderclear();
+            }
+            else{
+                move(Math.floor(x/bx),Math.floor(y/by),Math.floor(prevx/bx),Math.floor(prevy/by));
+                flag = 1;
+            }
+            if(hl[Math.floor(x/bx)][Math.floor(y/by)] == 0 && matpos[Math.floor(x/bx)][Math.floor(y/by)] != null && flag == 0){
+                if(turn == 0){
+                    console.log(Math.floor(x/bx)+" "+Math.floor(y/by)+" "+matpos[Math.floor(x/bx)][Math.floor(y/by)])
+                    if(matpos[Math.floor(x/bx)][Math.floor(y/by)][0]=='w'){
+                        borderfill(x,y);
+//                        hl[x][y] = 1;
+                        possibilities(Math.floor(x/bx),Math.floor(y/by));    
+                    }
+                }
+                if(turn == 1){
+                    if(matpos[Math.floor(x/bx)][Math.floor(y/by)][0]=='b'){
+                        borderfill(x,y);
+//                        hl[x][y] = 1;
+                        possibilities(Math.floor(x/bx),Math.floor(y/by));
+                    }
+                }
+            }
+            else{
+                borderclear();
+            }
+            prevx = x;
+            prevy = y;
         }
         function game(){
             drawboard();
             if(ng == 1){
                 defaultpieces();
+                ng = 0;
             }
             drawpieces();
+            c.addEventListener('click',piececlick,false);
         }
         function drawboard(){
-            ctx.fillStyle = "black";
+            ctx.fillStyle = setcol;
             ctx.fillRect(0,0,c.width,c.height);
             x = (c.width)/8;
             y = (c.height)/8;
@@ -134,155 +437,78 @@
             pos = inipos;
         }
         function drawpieces(){
-            console.log("draw");
+//            console.log("draw");
             x = c.width/8;
             y = c.height/8;
             if(pos.black.pawn1.active == 1){
-                bp1 = new Image();
-                bp1.src = 'images/pawn.png';
-                bp1x = pos.black.pawn1.r;
-                bp1y = pos.black.pawn1.c;
-                bp1.onload = function(){
-                    ctx.drawImage(bp1,bp1x*x,bp1y*y,x,y);
-                }
+//                bp1 = new Image();
+//                bp1.src = 'images/pawn.png';
+//                bp1x = pos.black.pawn1.r;
+//                bp1y = pos.black.pawn1.c;
+//                bp1.onload = function(){
+//                    ctx.drawImage(bp1,bp1x*x,bp1y*y,x,y);
+//                }
+                drawpiece(pos.black.pawn1.r,pos.black.pawn1.c,"bpawn");
             }
             if(pos.black.pawn2.active == 1){
-                bp2 = new Image();
-                bp2.src = 'images/pawn.png';
-                bp2x = pos.black.pawn2.r;
-                bp2y = pos.black.pawn2.c;
-                bp2.onload = function(){
-                    ctx.drawImage(bp2,bp2x*x,bp2y*y,x,y);
-                }
+                drawpiece(pos.black.pawn2.r,pos.black.pawn2.c,"bpawn");
             }
             if(pos.black.pawn3.active == 1){
-                bp3 = new Image();
-                bp3.src = 'images/pawn.png';
-                bp3x = pos.black.pawn3.r;
-                bp3y = pos.black.pawn3.c;
-                bp3.onload = function(){
-                    ctx.drawImage(bp3,bp3x*x,bp3y*y,x,y);
-                }
+                drawpiece(pos.black.pawn3.r,pos.black.pawn3.c,"bpawn");
             }
             if(pos.black.pawn4.active == 1){
-                bp4 = new Image();
-                bp4.src = 'images/pawn.png';
-                bp4x = pos.black.pawn4.r;
-                bp4y = pos.black.pawn4.c;
-                bp4.onload = function(){
-                    ctx.drawImage(bp4,bp4x*x,bp4y*y,x,y);
-                }
+                drawpiece(pos.black.pawn4.r,pos.black.pawn4.c,"bpawn");
             }
             if(pos.black.pawn5.active == 1){
-                bp5 = new Image();
-                bp5.src = 'images/pawn.png';
-                bp5x = pos.black.pawn5.r;
-                bp5y = pos.black.pawn5.c;
-                bp5.onload = function(){
-                    ctx.drawImage(bp5,bp5x*x,bp5y*y,x,y);
-                }
+                drawpiece(pos.black.pawn5.r,pos.black.pawn5.c,"bpawn");
             }
             if(pos.black.pawn6.active == 1){
-                bp6 = new Image();
-                bp6.src = 'images/pawn.png';
-                bp6x = pos.black.pawn6.r;
-                bp6y = pos.black.pawn6.c;
-                bp6.onload = function(){
-                    ctx.drawImage(bp6,bp6x*x,bp6y*y,x,y);
-                }
+                drawpiece(pos.black.pawn6.r,pos.black.pawn6.c,"bpawn");
             }
             if(pos.black.pawn7.active == 1){
-                bp7 = new Image();
-                bp7.src = 'images/pawn.png';
-                bp7x = pos.black.pawn7.r;
-                bp7y = pos.black.pawn7.c;
-                bp7.onload = function(){
-                    ctx.drawImage(bp7,bp7x*x,bp7y*y,x,y);
-                }
+                drawpiece(pos.black.pawn7.r,pos.black.pawn7.c,"bpawn");
             }
             if(pos.black.pawn8.active == 1){
-                bp8 = new Image();
-                bp8.src = 'images/pawn.png';
-                bp8x = pos.black.pawn8.r;
-                bp8y = pos.black.pawn8.c;
-                bp8.onload = function(){
-                    ctx.drawImage(bp8,bp8x*x,bp8y*y,x,y);
-                }
+                drawpiece(pos.black.pawn8.r,pos.black.pawn8.c,"bpawn");
             }
-            
+            if(pos.black.rook1.active == 1){
+                drawpiece(pos.black.rook1.r,pos.black.rook1.c,"brook");
+            }
+            if(pos.black.rook2.active == 1){
+                drawpiece(pos.black.rook2.r,pos.black.rook2.c,"brook");
+            }
             
             
             if(pos.white.pawn1.active == 1){
-                p1 = new Image();
-                p1.src = 'images/pawnw.png';
-                p1x = pos.white.pawn1.r;
-                p1y = pos.white.pawn1.c;
-                p1.onload = function(){
-                    ctx.drawImage(p1,p1x*x,p1y*y,x,y);
-                }
+                drawpiece(pos.white.pawn1.r,pos.white.pawn1.c,"wpawn");
             }
             if(pos.white.pawn2.active == 1){
-                p2 = new Image();
-                p2.src = 'images/pawnw.png';
-                p2x = pos.white.pawn2.r;
-                p2y = pos.white.pawn2.c;
-                p2.onload = function(){
-                    ctx.drawImage(p2,p2x*x,p2y*y,x,y);
-                }
+                drawpiece(pos.white.pawn2.r,pos.white.pawn2.c,"wpawn");
             }
             if(pos.white.pawn3.active == 1){
-                p3 = new Image();
-                p3.src = 'images/pawnw.png';
-                p3x = pos.white.pawn3.r;
-                p3y = pos.white.pawn3.c;
-                p3.onload = function(){
-                    ctx.drawImage(p3,p3x*x,p3y*y,x,y);
-                }
+                drawpiece(pos.white.pawn3.r,pos.white.pawn3.c,"wpawn");
             }
             if(pos.white.pawn4.active == 1){
-                p4 = new Image();
-                p4.src = 'images/pawnw.png';
-                p4x = pos.white.pawn4.r;
-                p4y = pos.white.pawn4.c;
-                p4.onload = function(){
-                    ctx.drawImage(p4,p4x*x,p4y*y,x,y);
-                }
+                drawpiece(pos.white.pawn4.r,pos.white.pawn4.c,"wpawn");
+
             }
             if(pos.white.pawn5.active == 1){
-                p5 = new Image();
-                p5.src = 'images/pawnw.png';
-                p5x = pos.white.pawn5.r;
-                p5y = pos.white.pawn5.c;
-                p5.onload = function(){
-                    ctx.drawImage(p5,p5x*x,p5y*y,x,y);
-                }
+                drawpiece(pos.white.pawn5.r,pos.white.pawn5.c,"wpawn");
             }
             if(pos.white.pawn6.active == 1){
-                p6 = new Image();
-                p6.src = 'images/pawnw.png';
-                p6x = pos.white.pawn6.r;
-                p6y = pos.white.pawn6.c;
-                p6.onload = function(){
-                    ctx.drawImage(p6,p6x*x,p6y*y,x,y);
-                }
+                drawpiece(pos.white.pawn6.r,pos.white.pawn6.c,"wpawn");
             }
             if(pos.white.pawn7.active == 1){
-                p7 = new Image();
-                p7.src = 'images/pawnw.png';
-                p7x = pos.white.pawn7.r;
-                p7y = pos.white.pawn7.c;
-                p7.onload = function(){
-                    ctx.drawImage(p7,p7x*x,p7y*y,x,y);
-                }
+                drawpiece(pos.white.pawn7.r,pos.white.pawn7.c,"wpawn");
             }
             if(pos.white.pawn8.active == 1){
-                p8 = new Image();
-                p8.src = 'images/pawnw.png';
-                p8x = pos.white.pawn8.r;
-                p8y = pos.white.pawn8.c;
-                p8.onload = function(){
-                    ctx.drawImage(p8,p8x*x,p8y*y,x,y);
-                }
+                drawpiece(pos.white.pawn8.r,pos.white.pawn8.c,"wpawn");
+            }
+            if(pos.white.rook1.active == 1){
+                drawpiece(pos.white.rook1.r,pos.white.rook1.c,"wrook");
+            }
+            if(pos.white.rook2.active == 1){
+                drawpiece(pos.white.rook2.r,pos.white.rook2.c,"wrook");
             }
         }
     </script>
