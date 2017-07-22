@@ -4,45 +4,13 @@ var ng = 1;
 var prevx = -1;
 var prevy = -1;
 var turn = 0;//white
-var hl = new Array(8);
-for (var i = 0;i < 8;i++){
-    hl[i] = new Array(8);
-}
-for(var i = 0;i < 8;i++){
-    for(var j = 0;j < 8;j++){
-        hl[i][j] = '0';
-    }
-}
-var matpos = new Array(8);
-for(var i = 0;i < 8;i++){
-    matpos[i] = new Array(8);
-}
-for(var i = 0;i < 8;i++){
-    matpos[i][1] = "wpawn";
-    matpos[i][6] = "bpawn";
-}
-matpos[0][0] = "wrook";
-matpos[7][0] = "wrook";
-matpos[0][7] = "brook";
-matpos[7][7] = "brook";
-
-matpos[2][0] = "wbish";
-matpos[5][0] = "wbish";
-matpos[2][7] = "bbish";
-matpos[5][7] = "bbish";
-
-matpos[3][0] = "wqueen";
-matpos[3][7] = "bqueen";
-
-matpos[4][0] = "wking";
-matpos[4][7] = "bking";
-
-matpos[1][0] = "whorse";
-matpos[6][0] = "whorse";
-matpos[1][7] = "bhorse";
-matpos[6][7] = "bhorse";
-
-inipos = 
+matpos = JSON.parse(localStorage.getItem("mp"));
+hl = JSON.parse(localStorage.getItem("h"));
+var wkc = 0;var bkc = 0;
+var wkm = 0;var bkm = 0;
+var wr1m = 0;var br1m = 0;
+var wcr1 = 0;var bcr1 = 0;
+var inipos = 
 {
     "white": {
         "rook1": {
@@ -564,12 +532,40 @@ function possibilities(x,y){
     if(matpos[x][y]=="wking" || matpos[x][y]=="bking"){
         onestrcheck(x,y);
         onecrosscheck(x,y);
+        if(matpos[x][y] == "wking" && wkc == 0 && wkm == 0 && wr1m == 0){
+            borderfill(6*bx,0);
+            wcr1 = 1;
+        }
+        if(matpos[x][y] == "bking" && bkc == 0 && bkm == 0 && br1m == 0){
+            borderfill(6*bx,7*bx);
+            bcr1 = 1;
+        }
     }
     if(matpos[x][y]=="whorse" || matpos[x][y]=="bhorse"){
         horsecheck(x,y);
     }
+    if(hl[4][0] == 1){
+        wkc = 1;
+    }
+    if(hl[4][7] == 1){
+        bkc = 1;
+    }
 }
 function move(x,y,prevx,prevy){
+    if(wcr1 == 1 && x == 6 && y == 0){
+        boxcol(7,0);
+        ctx.fillRect(7*bx,0,bx,by);
+        drawpiece(5,0,"wrook");
+        matpos[5][0] = "wrook";
+        matpos[7][0] = null;
+    }
+    if(bcr1 == 1 && x == 6 && y == 7){
+        boxcol(7,7);
+        ctx.fillRect(7*bx,7*by,bx,by);
+        drawpiece(5,7,"brook");
+        matpos[5][7] = "brook";
+        matpos[7][7] = null;
+    }
     if(matpos[prevx][prevy][1] == 'p'){
         if(matpos[prevx][prevy][0] == 'w'){
             boxcol(prevx,prevy);
@@ -588,6 +584,9 @@ function move(x,y,prevx,prevy){
     }
     if(matpos[prevx][prevy][1] == 'r'){
         if(matpos[prevx][prevy][0] == 'w'){
+            if(prevx == 7 && prevy == 0){
+                wr1m = 1;
+            }
             boxcol(prevx,prevy);
             ctx.fillRect(prevx*bx,prevy*by,bx,by);
             drawpiece(x,y,"wrook");
@@ -595,6 +594,9 @@ function move(x,y,prevx,prevy){
             turn = 1;
         }
         if(matpos[prevx][prevy][0] == 'b'){
+            if(prevx == 7 && prevy == 7){
+                br1m = 1;
+            }
             boxcol(prevx,prevy);
             ctx.fillRect(prevx*bx,prevy*by,bx,by);
             drawpiece(x,y,"brook");
@@ -636,6 +638,7 @@ function move(x,y,prevx,prevy){
     }
     if(matpos[prevx][prevy][1] == 'k'){
         if(matpos[prevx][prevy][0] == 'w'){
+            wkm = 1;
             boxcol(prevx,prevy);
             ctx.fillRect(prevx*bx,prevy*by,bx,by);
             drawpiece(x,y,"wking");
@@ -643,6 +646,7 @@ function move(x,y,prevx,prevy){
             turn = 1;
         }
         if(matpos[prevx][prevy][0] == 'b'){
+            bkm = 1;
             boxcol(prevx,prevy);
             ctx.fillRect(prevx*bx,prevy*by,bx,by);
             drawpiece(x,y,"bking");
@@ -690,7 +694,7 @@ function piececlick(event){
     }
     if(hl[Math.floor(x/bx)][Math.floor(y/by)] == 0 && matpos[Math.floor(x/bx)][Math.floor(y/by)] != null && flag == 0){
         if(turn == 0){
-            console.log(Math.floor(x/bx)+" "+Math.floor(y/by)+" "+matpos[Math.floor(x/bx)][Math.floor(y/by)])
+//            console.log(Math.floor(x/bx)+" "+Math.floor(y/by)+" "+matpos[Math.floor(x/bx)][Math.floor(y/by)])
             if(matpos[Math.floor(x/bx)][Math.floor(y/by)][0]=='w'){
                 borderfill(x,y);
 //                        hl[x][y] = 1;
