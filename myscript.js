@@ -10,6 +10,8 @@ var wkc = 0;var bkc = 0;
 var wkm = 0;var bkm = 0;
 var wr1m = 0;var br1m = 0;
 var wcr1 = 0;var bcr1 = 0;
+var wr2m = 0;var br2m = 0;
+var wcr2 = 0;var bcr2 = 0;
 var inipos = 
 {
     "white": {
@@ -532,145 +534,71 @@ function possibilities(x,y){
     if(matpos[x][y]=="wking" || matpos[x][y]=="bking"){
         onestrcheck(x,y);
         onecrosscheck(x,y);
-        if(matpos[x][y] == "wking" && wkc == 0 && wkm == 0 && wr1m == 0){
-            borderfill(6*bx,0);
-            wcr1 = 1;
+        if(matpos[x][y] == "wking" && wkc == 0 && wkm == 0){
+            if(wr1m == 0 && matpos[5][0]==null && matpos[6][0]==null){
+                borderfill(6*bx,0);
+                wcr1 = 1;
+            }
+            if(wr2m == 0 && matpos[3][0]==null && matpos[2][0]==null && matpos[1][0]==null){
+                borderfill(2*bx,0);
+                wcr2 = 1;
+            }
         }
-        if(matpos[x][y] == "bking" && bkc == 0 && bkm == 0 && br1m == 0){
-            borderfill(6*bx,7*bx);
-            bcr1 = 1;
+        if(matpos[x][y] == "bking" && bkc == 0 && bkm == 0){
+            if(br1m == 0 && matpos[5][7]==null && matpos[6][7]==null){
+                borderfill(6*bx,7*bx);
+                bcr1 = 1;
+            }
+            if(br2m == 0 && matpos[3][7]==null && matpos[2][7]==null && matpos[1][7]==null){
+                borderfill(2*bx,7*bx);
+                bcr2 = 1;
+            }
         }
     }
     if(matpos[x][y]=="whorse" || matpos[x][y]=="bhorse"){
         horsecheck(x,y);
     }
     if(hl[4][0] == 1){
-        wkc = 1;
+//        wkc = 1;
     }
     if(hl[4][7] == 1){
-        bkc = 1;
+//        bkc = 1;
     }
 }
+function movepiece(x,y,prevx,prevy){
+    boxcol(prevx,prevy);
+    ctx.fillRect(prevx*bx,prevy*by,bx,by);
+    drawpiece(x,y,matpos[prevx][prevy]);
+    matpos[x][y]=matpos[prevx][prevy];
+    matpos[prevx][prevy] = null;
+}
 function move(x,y,prevx,prevy){
-    if(wcr1 == 1 && x == 6 && y == 0){
-        boxcol(7,0);
-        ctx.fillRect(7*bx,0,bx,by);
-        drawpiece(5,0,"wrook");
-        matpos[5][0] = "wrook";
-        matpos[7][0] = null;
-    }
-    if(bcr1 == 1 && x == 6 && y == 7){
-        boxcol(7,7);
-        ctx.fillRect(7*bx,7*by,bx,by);
-        drawpiece(5,7,"brook");
-        matpos[5][7] = "brook";
-        matpos[7][7] = null;
-    }
-    if(matpos[prevx][prevy][1] == 'p'){
-        if(matpos[prevx][prevy][0] == 'w'){
-            boxcol(prevx,prevy);
-            ctx.fillRect(prevx*bx,prevy*by,bx,by);
-            drawpiece(x,y,"wpawn");
-            matpos[x][y] = "wpawn";
-            turn = 1;
-        }
-        if(matpos[prevx][prevy][0] == 'b'){
-            boxcol(prevx,prevy);
-            ctx.fillRect(prevx*bx,prevy*by,bx,by);
-            drawpiece(x,y,"bpawn");
-            matpos[x][y] = "bpawn";
-            turn = 0;
-        }
-    }
     if(matpos[prevx][prevy][1] == 'r'){
         if(matpos[prevx][prevy][0] == 'w'){
-            if(prevx == 7 && prevy == 0){
-                wr1m = 1;
-            }
-            boxcol(prevx,prevy);
-            ctx.fillRect(prevx*bx,prevy*by,bx,by);
-            drawpiece(x,y,"wrook");
-            matpos[x][y] = "wrook";
-            turn = 1;
+            if(prevx == 7 && prevy == 0){wr1m = 1;wcr1=0;}
+            if(prevx == 0 && prevy == 0){wr2m = 1;wcr2=0;}
         }
         if(matpos[prevx][prevy][0] == 'b'){
-            if(prevx == 7 && prevy == 7){
-                br1m = 1;
-            }
-            boxcol(prevx,prevy);
-            ctx.fillRect(prevx*bx,prevy*by,bx,by);
-            drawpiece(x,y,"brook");
-            matpos[x][y] = "brook";
-            turn = 0;
-        }
-    }
-    if(matpos[prevx][prevy][1] == 'b'){
-        if(matpos[prevx][prevy][0] == 'w'){
-            boxcol(prevx,prevy);
-            ctx.fillRect(prevx*bx,prevy*by,bx,by);
-            drawpiece(x,y,"wbish");
-            matpos[x][y] = "wbish";
-            turn = 1;
-        }
-        if(matpos[prevx][prevy][0] == 'b'){
-            boxcol(prevx,prevy);
-            ctx.fillRect(prevx*bx,prevy*by,bx,by);
-            drawpiece(x,y,"bbish");
-            matpos[x][y] = "bbish";
-            turn = 0;
-        }
-    }
-    if(matpos[prevx][prevy][1] == 'q'){
-        if(matpos[prevx][prevy][0] == 'w'){
-            boxcol(prevx,prevy);
-            ctx.fillRect(prevx*bx,prevy*by,bx,by);
-            drawpiece(x,y,"wqueen");
-            matpos[x][y] = "wqueen";
-            turn = 1;
-        }
-        if(matpos[prevx][prevy][0] == 'b'){
-            boxcol(prevx,prevy);
-            ctx.fillRect(prevx*bx,prevy*by,bx,by);
-            drawpiece(x,y,"bqueen");
-            matpos[x][y] = "bqueen";
-            turn = 0;
+            if(prevx == 7 && prevy == 7){br1m = 1;bcr1=0;}
+            if(prevx == 0 && prevy == 7){br2m = 1;bcr2=0;}
         }
     }
     if(matpos[prevx][prevy][1] == 'k'){
         if(matpos[prevx][prevy][0] == 'w'){
             wkm = 1;
-            boxcol(prevx,prevy);
-            ctx.fillRect(prevx*bx,prevy*by,bx,by);
-            drawpiece(x,y,"wking");
-            matpos[x][y] = "wking";
-            turn = 1;
+            if(wcr1 == 1 && x == 6 && y == 0)movepiece(5,0,7,0);
+            if(wcr2 == 1 && x == 2 && y == 0)movepiece(3,0,0,0);
+            wcr1=wcr2=0;
         }
         if(matpos[prevx][prevy][0] == 'b'){
             bkm = 1;
-            boxcol(prevx,prevy);
-            ctx.fillRect(prevx*bx,prevy*by,bx,by);
-            drawpiece(x,y,"bking");
-            matpos[x][y] = "bking";
-            turn = 0;
+            if(bcr1 == 1 && x == 6 && y == 7)movepiece(5,7,7,7);
+            if(bcr2 == 1 && x == 2 && y == 7)movepiece(3,7,0,7);
+            bcr1=bcr2=0;
         }
     }
-    if(matpos[prevx][prevy][1] == 'h'){
-        if(matpos[prevx][prevy][0] == 'w'){
-            boxcol(prevx,prevy);
-            ctx.fillRect(prevx*bx,prevy*by,bx,by);
-            drawpiece(x,y,"whorse");
-            matpos[x][y] = "whorse";
-            turn = 1;
-        }
-        if(matpos[prevx][prevy][0] == 'b'){
-            boxcol(prevx,prevy);
-            ctx.fillRect(prevx*bx,prevy*by,bx,by);
-            drawpiece(x,y,"bhorse");
-            matpos[x][y] = "bhorse";
-            turn = 0;
-        }
-    }
-    matpos[prevx][prevy] = null;
+    movepiece(x,y,prevx,prevy);
+    turn = 1-turn;
     borderclear();
 }
 function piececlick(event){
