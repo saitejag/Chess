@@ -1,0 +1,45 @@
+<html>
+    <style>
+        .border {
+            margin-top: 100px;
+            margin-right: 50px;
+            margin-left: 50px;
+            margin-bottom: 100px;
+        }
+        .btnsize{
+            font-size: 50px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <head>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    </head>
+    <body class="container-fluid">
+        <div class="row">
+            <div class="col-sm-4" align="center" style="background-color:red;">
+                <form method="post" action="chess.html">
+                    <input type="number" style="display:none;" value="0">
+                    <a href="chess.html">
+                        <button type="submit" class="btn-success btnsize border">Play locally</button>    
+                    </a>
+                </form>
+            </div>
+            <div class="col-sm-4" align="center" style="background-color:blue;">
+                <form method="post" action="chess.html">
+                    <input type="number" style="display:none;" value="2">
+                    <a href="chess.html">
+                        <button type="submit" class="btn-success btnsize border">Play online</button>    
+                    </a>
+                </form>
+            </div>
+            <div class="col-sm-4" align="center" style="background-color:brown;">
+                <form method="post" action="chess.html">
+                    <input type="number" style="display:none;" value="1">
+                    <a href="chess.html">
+                        <button type="submit" class="btn-success btnsize border">Play random</button>    
+                    </a>
+                </form>
+            </div>            
+        </div>
+    </body>
+</html>

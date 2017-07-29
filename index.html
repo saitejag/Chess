@@ -1,45 +1,61 @@
 <html>
     <style>
-        .border {
-            margin-top: 100px;
-            margin-right: 50px;
-            margin-left: 50px;
-            margin-bottom: 100px;
-        }
-        .btnsize{
-            font-size: 50px;
+        .col{
+            background-color: gray;
         }
     </style>
+    <script>
+        var hl = new Array(8);
+        for (var i = 0;i < 8;i++){
+            hl[i] = new Array(8);
+        }
+        for(var i = 0;i < 8;i++){
+            for(var j = 0;j < 8;j++){
+                hl[i][j] = '0';
+            }
+        }
+        var matpos = new Array(8);
+        for(var i = 0;i < 8;i++){
+            matpos[i] = new Array(8);
+        }
+        for(var i = 0;i < 8;i++){
+            matpos[i][1] = "wpawn";
+            matpos[i][6] = "bpawn";
+        }
+        matpos[0][0] = "wrook";
+        matpos[7][0] = "wrook";
+        matpos[0][7] = "brook";
+        matpos[7][7] = "brook";
+
+        matpos[2][0] = "wbish";
+        matpos[5][0] = "wbish";
+        matpos[2][7] = "bbish";
+        matpos[5][7] = "bbish";
+
+        matpos[3][0] = "wqueen";
+        matpos[3][7] = "bqueen";
+
+        matpos[4][0] = "wking";
+        matpos[4][7] = "bking";
+
+        matpos[1][0] = "whorse";
+        matpos[6][0] = "whorse";
+        matpos[1][7] = "bhorse";
+        matpos[6][7] = "bhorse";
+        localStorage.setItem("mp",JSON.stringify(matpos));
+        localStorage.setItem("h",JSON.stringify(hl));
+    </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="myscript.js"></script>
+    <style>
+        
+    </style>
     <head>
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    
     </head>
-    <body class="container-fluid">
-        <div class="row">
-            <div class="col-sm-4" align="center" style="background-color:red;">
-                <form method="post" action="chess.html">
-                    <input type="number" style="display:none;" value="0">
-                    <a href="chess.html">
-                        <button type="submit" class="btn-success btnsize border">Play locally</button>    
-                    </a>
-                </form>
-            </div>
-            <div class="col-sm-4" align="center" style="background-color:blue;">
-                <form method="post" action="chess.html">
-                    <input type="number" style="display:none;" value="2">
-                    <a href="chess.html">
-                        <button type="submit" class="btn-success btnsize border">Play online</button>    
-                    </a>
-                </form>
-            </div>
-            <div class="col-sm-4" align="center" style="background-color:brown;">
-                <form method="post" action="chess.html">
-                    <input type="number" style="display:none;" value="1">
-                    <a href="chess.html">
-                        <button type="submit" class="btn-success btnsize border">Play random</button>    
-                    </a>
-                </form>
-            </div>            
-        </div>
+    <body onload="start()" align="center" class="col">
+        <canvas id="can">
+            
+        </canvas>
     </body>
 </html>
