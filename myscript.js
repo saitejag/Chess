@@ -650,7 +650,7 @@ function game(){
         ng = 0;
     }
     drawpieces();
-    c.addEventListener('click',piececlick,true);
+    c.addEventListener('click',piececlick,false);
 }
 function drawboard(){
     ctx.fillStyle = setcol;
